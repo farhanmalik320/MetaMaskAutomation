@@ -44,7 +44,7 @@ def MetaMaskSetup():
     i=0
     j=0
     length=12
-    words=["Your seed phrase "]
+    words=["your phrase"]
 
     while i<12:
         #Seedphrasefirstword
@@ -108,7 +108,7 @@ def selectnetwork():
 
     driver.find_element(By.CLASS_NAME, 'network-dropdown-content--link').click()
 
-    time.sleep(5)
+    time.sleep(3)
 
     options = driver.find_elements(By.CLASS_NAME, 'settings-page__content-item-col')
 
@@ -123,19 +123,14 @@ def selectnetwork():
 
     driver.find_element(By.CLASS_NAME, 'chip__left-icon').click()
 
-    time.sleep(5)
+    time.sleep(3)
 
     # select network
     networks = driver.find_elements(By.CLASS_NAME, 'color-indicator__inner-circle')
     networks[2].click()
 
-    time.sleep(5)
 
-    # Open the metamask
-    driver.get('chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html')
-
-
-def opensea():
+def connectwallet():
 
     # switch to uniswap
     driver.switch_to.window(driver.window_handles[1])
@@ -181,16 +176,47 @@ def opensea():
 
     #switch_network = driver.find_element(By.CSS_SELECTOR, '.btn--rounded.btn-primary').click()
 
+def purchaseNFT():
+    # open the NFT
+    driver.get(
+        'https://testnets.opensea.io/assets/goerli/0xf4910c763ed4e47a585e2d34baa9a4b611ae448c/13453191221977235658492620070148485862678800902474289814882130172116165722113')
 
-    print("Test Case Completed successfully")
+    WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.CLASS_NAME, 'dqdDEM')))
 
-    driver.quit()
+    # Click on add to cart
+    driver.find_element(By.CLASS_NAME, 'dqdDEM').click()
+
+    time.sleep(2)
+
+    add_to_cart_btn=driver.find_elements(By.CLASS_NAME, 'NavItem--withIcon')
+    add_to_cart_btn[1].click()
+
+    WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.CLASS_NAME,'ikQpYW')))
+
+    complete_purchase= driver.find_element(By.CLASS_NAME,'ikQpYW').click()
+
+    time.sleep(10)
+
+    # change to metmask
+    driver.switch_to.window(driver.window_handles[0])
+
+    # Open the metamask
+    driver.get('chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn/home.html')
+
+    WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '.btn--rounded.btn-primary')))
+
+    confirm_button = driver.find_element(By.CSS_SELECTOR, '.btn--rounded.btn-primary').click()
+
+    time.sleep(5)
+
+    driver.switch_to.window(driver.window_handles[1])
 
 setURL()
 MetaMaskSetup()
 #addnetwork()
 selectnetwork()
-opensea()
+connectwallet()
+purchaseNFT()
 
 
 
